@@ -1,6 +1,6 @@
 @extends('templates.master')
 @section('title')
-    Home
+    Inicio
 @endsection
 @section('container')
 <div class="container mt-4">

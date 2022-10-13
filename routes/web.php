@@ -17,16 +17,31 @@ Route::get('/', function () {
     return view('index');
 });
 
-Route::get('/usuarios', function () {
-    return view('user');
+Route::get('/cuentas', function () {
+    return view('cuentasBancarias');
 });
 
-Route::get('/holachavale', function () {
-    return view('welcome');
+Route::get('/cobros', function () {
+    return view('cobros');
 });
+
+Route::get('/abonos', function () {
+    return view('abonos');
+});
+
+Route::get('/login', function () {
+    return view('login');
+});
+
+Route::get('/register', function () {
+    return view('register');
+});
+
 
 Route::view('/','index')->name('inicio');
 
 Route::view('/cuentas','cuentasBancarias')->name('cuentas');
 
-Route::view('/holachavale','welcome')->name('welcome');
+Route::view('/cobros','cobros')->name('cobros');
+
+Route::view('/abonos','abonos')->name('abonos');

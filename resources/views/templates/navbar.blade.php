@@ -17,11 +17,22 @@
         <a class="nav-link" href="{{route('cuentas')}}">Cuentas <?php echo current_pagina($cuentasURL) ?></a>
       </li>
 
-      <?php $welcomeURL = '/index.php/holachavale' ?>
-      <li class="nav-item <?php echo active_pagina($welcomeURL) ?>">
-        <a class="nav-link" href="{{route('welcome')}}">Welcome <?php echo current_pagina($welcomeURL) ?></a>
+      <?php $cobrosURL = '/index.php/cobros' ?>
+      <li class="nav-item <?php echo active_pagina($cobrosURL) ?>">
+        <a class="nav-link" href="{{route('cobros')}}">cobros <?php echo current_pagina($cobrosURL) ?></a>
       </li>
 
+      <?php $abonosURL = '/index.php/abonos' ?>
+      <li class="nav-item <?php echo active_pagina($abonosURL) ?>">
+        <a class="nav-link" href="{{route('abonos')}}">abonos <?php echo current_pagina($abonosURL) ?></a>
+      </li>
+
+      {{-- comment 
+      <?php $copiURL = '/index.php/copi' ?>
+      <li class="nav-item <?php echo active_pagina($copiURL) ?>">
+        <a class="nav-link" href="{{route('copi')}}">copi <?php echo current_pagina($copiURL) ?></a>
+      </li>
+      --}}
     </ul>
   </div>
 </nav>
