@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\cuentasController;
+use App\Http\Controllers\usuariosController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,11 +39,27 @@ Route::get('/register', function () {
     return view('register');
 });
 
-
 Route::view('/','index')->name('inicio');
 
-Route::view('/cuentas','cuentasBancarias')->name('cuentas');
+Route::get('/cuentas',[cuentasController::class, 'index'])->name('cuentas');
 
 Route::view('/cobros','cobros')->name('cobros');
 
 Route::view('/abonos','abonos')->name('abonos');
+
+Route::view('/login','login')->name('login');
+
+#CONTROLLERS
+Route::resources([
+    'usuariosController' => usuariosController::class,
+]);
+
+Route::resources([
+    'cuentasController' => cuentasController::class,
+]);
+
+Route::get('/confirmarUsuario', [usuariosController::class, 'search']);
+Route::post('/desconectarCuenta', [usuariosController::class, 'logOut']);
+Route::post('/crearUsuario', [usuariosController::class, 'store']);
+
+Route::post('/crearCuenta', [cuentasController::class, 'store']);

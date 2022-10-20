@@ -6,61 +6,77 @@
 <div class="container mt-4">
     <div class="card">
         <div class="card-header" style="background-color: #E5E5E5; text-align: center;">
+            <!-- Message -->
+            @if(isset($mensaje))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">{{ $mensaje }}</div>
+            @endif
             <h1>Cuentas</h1>
+            <!-- Create user Modal -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createUserModal">Agregar Cuenta</button>
+            <!-- Modal -->
+            <div class="modal fade" id="createUserModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="createUserModal">Nueva Cuenta</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-group" method="POST" action="/crearCuenta">
+                                <label>Nombre de cuenta</label>
+                                <input type="text" id="nombreCuenta" name="nombreCuenta" class="form-control" placeholder="Banco estado">
+                                <label>link_token</label>
+                                <input type="text" id="link_token" name="link_token" class="form-control" placeholder="link_token">
+                                <label>api_key</label>
+                                <input type="text" id="api_key" name="api_key" class="form-control" placeholder="api_key">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-primary">Agregar</button>
+                        </div>
+                                {{ csrf_field() }}
+                                {{ method_field('POST') }}
+                            </form>
+                    </div>
+                </div>
+            </div>
+            
         </div>
         <div class="card-body">
-            <table class="table table-striped">
-                <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">Nombre Cuenta</th>
-                        <th scope="col">Dinero en cuenta</th>
-                        <th scope="col">Fecha Ultimo Cargo</th>
-                        <th scope="col">Monto Ultimo Cargo</th>
-                        <th scope="col">Fecha Ultimo Abono</th>
-                        <th scope="col">Monto Ultimo Abono</th>
-                        <th scope="col">Prueba link_token</th>
-                        <th scope="col">Prueba API key</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <form action="" method="get">
-                            <th scope="row">1</th><input type="hidden" name="ID" value="1">
-                            <td>Banco Estado <button type="submit">Editar</button>
-                            </td>
-                            <td>$45670</td>
-                            <td>28/09/22</td>
-                            <td>$100</td>
-                            <td>28/09/22</td>
-                            <td>$100</td>
-                        </form>
-                    </tr>
-                    <tr>
-                        <form action="" method="get">
-                            <th scope="row">2</th><input type="hidden" name="ID" value="2">
-                            <td>Banco de Chile (Mi cuenta)<button type="submit">Editar</button>
-                            </td>
-                            <td>$30000</td>
-                            <td>13/09/22</td>
-                            <td>$100</td>
-                            <td>28/09/22</td>
-                            <td>$100</td>
-                        </form>
-                    </tr>
-                    <tr>
-                        <form action="" method="get">
-                            <th scope="row">3</th> <input type="hidden" name="ID" value="3">
-                            <td>Banco de Chile (Papá)<button type="submit">Editar</button></td>
-                            <td>$567890</td>
-                            <td>08/07/22</td>
-                            <td>$100</td>
-                            <td>10/09/22</td>
-                            <td>$100</td>
-                        </form>
-                    </tr>
-                </tbody>
-            </table>
+            @if (!$cuentas->isEmpty())
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Nombre Cuenta</th>
+                            <th scope="col">Dinero en cuenta</th>
+                            <th scope="col">Fecha Ultimo Cargo</th>
+                            <th scope="col">Monto Ultimo Cargo</th>
+                            <th scope="col">Fecha Ultimo Abono</th>
+                            <th scope="col">Monto Ultimo Abono</th>
+                            <th scope="col">Prueba link_token</th>
+                            <th scope="col">Prueba API key</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($cuentas as $cuenta)
+                            <tr>
+                                <td>Nombre prueba</td>
+                                <td>Prueba</td>
+                                <td>Prueba</td>
+                                <td>Prueba</td>
+                                <td>Prueba</td>
+                                <td>Prueba</td>
+                                <td>{{ $cuenta->link_token}}</td>
+                                <td>{{ $cuenta->api_key}}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @else
+                <h3 style="text-align: center;">No tienes cuentas registradas</h1>
+            @endif
         </div>
     </div>
 </div>

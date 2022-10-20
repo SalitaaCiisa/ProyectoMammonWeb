@@ -1,3 +1,12 @@
+<?php
+    if (!isset($_SESSION)) {
+            session_start();
+        }
+    if ($_SESSION == null) {
+        header("Location: /login");
+        exit();
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,6 +21,18 @@
     @include('templates.navbar')
 </head>
 <body>
+    @if (isset($mensaje))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">{{ $mensaje }}</div>
+        @endif
     @yield('container')
 </body>
+<footer>
+    <script>
+      window.setTimeout(function() {
+        $(".alert").fadeTo(500, 0).slideUp(500, function(){
+          $(this).remove();
+        });
+      }, 2000);
+  </script>
+</footer>
 </html>
