@@ -18,11 +18,12 @@ return new class extends Migration
             $table->integer('idUsuario');
 
             $table->foreign('idUsuario')->references('id')->on('usuarios');
-            $table->unique(['id','idUsuario']);
 
             $table->string('nombreCuenta', 100);
             $table->string('link_token', 255);
             $table->string('api_key', 255);
+
+            $table->unique(['idUsuario','link_token','api_key']);
         });
     }
 
