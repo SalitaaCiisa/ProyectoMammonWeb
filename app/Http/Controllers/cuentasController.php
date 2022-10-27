@@ -71,7 +71,7 @@ class cuentasController extends Controller
                 return $this->index($mensaje);
             } else {
                 $mensaje = "Ha ocurrido un error al insertar [Error Code: " . $e->errorInfo[1] . "]";
-                dd($e->errorInfo);
+                //dd($e->errorInfo);
                 return $this->index($mensaje);
             }
         }

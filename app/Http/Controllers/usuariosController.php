@@ -66,7 +66,6 @@ class usuariosController extends Controller
                 return view('/register', compact('mensaje'));
             } else {
                 $mensaje = "Ha ocurrido un error al insertar [Error Code: " . $e->errorInfo[1] . "]";
-                dd($e->errorInfo);
                 return view('/register', compact('mensaje'));
             }
         }
@@ -94,9 +93,17 @@ class usuariosController extends Controller
         try {
             $usuario = DB::table('usuarios')->where('username', $request->username)->where('password', $request->password)->get();
             return view('login', compact('usuario', 'request'));
-        } catch (\Throwable $th) {
-            $mensaje = 'Usuario no encontrado';
-            return view('login', compact('usuario', 'request'));
+        } catch (\Illuminate\Database\QueryException $e) {
+            $errorCode = $e->errorInfo[1];
+            //dd($e->errorInfo);
+
+            if (false) {
+                $mensaje = '';
+                return view('/login', compact('mensaje'));
+            }else {
+                $mensaje = "Ha ocurrido un error al iniciar sesion [Error Code: " . $e->errorInfo[1] . "]";
+                return view('/login', compact('mensaje'));
+            }
         }
     }
 
