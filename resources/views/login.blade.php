@@ -70,7 +70,7 @@ if (isset($usuario)) {
           $(this).remove();
         });
       }, 2000);
-  </script>
+    </script>
 </footer>
 
 </html>

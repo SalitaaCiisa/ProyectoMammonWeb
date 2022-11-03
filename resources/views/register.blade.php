@@ -22,10 +22,20 @@ if ($_SESSION != null) {
 </head>
 
 <body>
-    @if (isset($mensaje))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">{{ $mensaje }}</div>
-    @endif
     <div class="p-5">
+        @if (isset($mensaje))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">{{ $mensaje }}</div>
+        @endif
+        @if (count($errors) > 0)
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @php
+                $mensaje = null;
+                foreach ($errors->all() as $msg) {
+                    echo $msg."<br>";
+                }
+            @endphp
+            </div>
+        @endif
         <form action="/crearUsuario" method="POST">
             <h1 class="h3 mb-3 fw-normal">Registrarse</h1>
 
@@ -59,11 +69,11 @@ if ($_SESSION != null) {
 <footer>
     <script>
         window.setTimeout(function() {
-            $(".alert").fadeTo(500, 0).slideUp(500, function() {
-                $(this).remove();
-            });
+          $(".alert").fadeTo(500, 0).slideUp(500, function(){
+            $(this).remove();
+          });
         }, 2000);
-    </script>
+      </script>
 </footer>
 
 </html>
