@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('usuarios', function (Blueprint $table) {
-            $table->integer('id')->autoIncrement();
+            $table->id('id');
 
             $table->string('username',50)->unique();
             $table->string('password', 255);
@@ -23,6 +23,8 @@ return new class extends Migration
             $table->json('cuentas')->nullable(true);
             $table->json('cobros')->nullable(true);
             $table->json('abonos')->nullable(true);
+            
+            $table->timestamps();
         });
     }
 

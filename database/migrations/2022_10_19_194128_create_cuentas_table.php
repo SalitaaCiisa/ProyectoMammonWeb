@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('cuentas', function (Blueprint $table) {
-            $table->integer('id')->autoIncrement();
-            $table->integer('idUsuario');
+            $table->id('id');
+            $table->foreignId('idUsuario');
 
             $table->foreign('idUsuario')->references('id')->on('usuarios');
 
@@ -24,6 +24,8 @@ return new class extends Migration
             $table->string('api_key', 255);
 
             $table->unique(['idUsuario','link_token','api_key']);
+            
+            $table->timestamps();
         });
     }
 

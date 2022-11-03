@@ -14,7 +14,18 @@ return new class extends Migration
     public function up()
     {
         Schema::create('abonos', function (Blueprint $table) {
-            $table->id();
+            $table->id('id');
+            $table->foreignId('idUsuario');
+
+            $table->foreign('idUsuario')->references('id')->on('usuarios');
+            
+            $table->string('nombreAbono', 50)->unique();
+            $table->string('abonador', 50);
+            $table->integer('monto');
+            $table->date('fechaAbono');
+            $table->string('descripcion', 255);
+            $table->enum('frecuencia',['mensual','semanal','unico',]);
+            
             $table->timestamps();
         });
     }
