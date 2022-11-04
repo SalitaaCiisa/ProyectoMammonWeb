@@ -57,6 +57,7 @@
                             <th scope="col">Monto Ultimo Abono</th>
                             <th scope="col">Prueba link_token</th>
                             <th scope="col">Prueba API key</th>
+                            <th scope="col">Opciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -70,6 +71,14 @@
                                 <td>Prueba</td>
                                 <td>{{ $cuenta->link_token}}</td>
                                 <td>{{ $cuenta->api_key}}</td>
+                                <td>
+                                    <form class="form-group" method="post" action="/borrarCuenta">
+                                        <input type="text" name="id" id="id" value="{{ $cuenta->id}}" hidden>
+                                        <button type="submit" class="btn btn-secondary">Borrar</button>
+                                        {{ csrf_field() }}
+                                        {{ method_field('DELETE')}}
+                                    </form>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>

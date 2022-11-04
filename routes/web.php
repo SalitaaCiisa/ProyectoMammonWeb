@@ -63,3 +63,4 @@ Route::post('/desconectarCuenta', [usuariosController::class, 'logOut']);
 Route::post('/crearUsuario', [usuariosController::class, 'store']);
 
 Route::post('/crearCuenta', [cuentasController::class, 'store']);
+Route::delete('/borrarCuenta', [cuentasController::class, 'destroy']);
