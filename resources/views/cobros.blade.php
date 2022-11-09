@@ -17,8 +17,28 @@
     <div class="card">
         <div class="card-header" style="background-color: #E5E5E5; text-align: center;">
             <h1>Cobros</h1>
-            <!-- Modal Store Button-->
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createCobroModal">Agregar</button>
+            <div class="d-flex justify-content-between">
+                <!-- Barra de busqueda -->
+                <form action="{{route('cobros.show')}}" class="row g-1">
+                    <div class="col-auto">
+                        <input type="text" class="form-control" id="buscar" name="buscar" placeholder="Buscar">
+                    </div>
+                    <div class="col-auto">
+                        <select class="form-control" name="columna" id="columna">
+                            <option value="nombreCobro">Nombre</option>
+                            <option value="cobrador">Cobrador</option>
+                            <option value="monto">Monto</option>
+                            <option value="fechaCobro">Fecha</option>
+                            <option value="frecuencia">Frecuencia</option>
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary mb-3">Buscar</button>
+                    </div>
+                </form>
+                <!-- Modal Store Button-->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createCobroModal">Agregar</button>
+            </div>
             <!-- Modal Store-->
             <div class="modal fade" id="createCobroModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">

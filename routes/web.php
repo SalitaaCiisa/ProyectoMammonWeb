@@ -29,5 +29,7 @@ Route::resource('cuentas', cuentasController::class)->only(['index','store','upd
 Route::resource('abonos', abonosController::class)->only(['index','store','update','destroy'])->name('index','abonos');
 Route::resource('cobros', cobrosController::class)->only(['index','store','update','destroy'])->name('index','cobros');
 
+Route::get('/cobrosB', [cobrosController::class, 'show'])->name('cobros.show');
+
 Route::get('/confirmarUsuario', [usuariosController::class, 'search']);
 Route::get('/desconectarCuenta', [usuariosController::class, 'logOut']);

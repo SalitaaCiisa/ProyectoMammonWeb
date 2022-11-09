@@ -71,7 +71,7 @@ class abonosController extends Controller
                 'monto' => 'required|integer',
                 'fechaAbono' => 'required|date|after_or_equal:today',
                 'frecuencia'=>['required', Rule::in(['unico','mensual','semanal'])],
-                'descripcion'=>'string|max:255'
+                'descripcion'=>'max:255'
             ];
 
         #MENSAJES PERSONALIZADOS 
@@ -164,7 +164,7 @@ class abonosController extends Controller
                 'monto' => 'required|integer',
                 'fechaAbono' => 'required|date|after_or_equal:today',
                 'frecuencia'=>['required', Rule::in(['unico','mensual','semanal'])],
-                'descripcion'=>'string|max:255'
+                'descripcion'=>'max:255'
             ];
 
         #MENSAJES PERSONALIZADOS 

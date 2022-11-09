@@ -14,7 +14,7 @@ class cobrosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($mensaje = null)
+    public function index($mensaje = null, $cobros = null)
     {
         if (!isset($_SESSION)) {
             session_start();
@@ -23,9 +23,13 @@ class cobrosController extends Controller
             header("Location:/login");
             exit();
         }
+
+        if ($cobros != null) {
+            return view('cobros', compact('cobros','mensaje'));
+        }
+
         try {
         $cobros = DB::table('cobros')->where('idUsuario',$_SESSION['idUsuario'])->get();
-        header("Location:/cobros");
         return view('cobros', compact('cobros','mensaje'));
         }
         catch(\Illuminate\Database\QueryException $e){
@@ -71,7 +75,7 @@ class cobrosController extends Controller
                 'monto' => 'required|integer',
                 'fechaCobro' => 'required|date|after_or_equal:today',
                 'frecuencia'=>['required', Rule::in(['unico','mensual','semanal'])],
-                'descripcion'=>'string|max:255'
+                'descripcion'=>'max:255'
             ];
 
         #MENSAJES PERSONALIZADOS 
@@ -111,7 +115,7 @@ class cobrosController extends Controller
                 return $this->index($mensaje);
             } else {
                 $mensaje = "Ha ocurrido un error al insertar [Error Code: " . $e->errorInfo[1] . "]";
-                dd($e->errorInfo);
+                //dd($e->errorInfo);
                 return $this->index($mensaje);
             }
         }
@@ -120,12 +124,70 @@ class cobrosController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        //
+        if (!isset($_SESSION)) {
+            session_start();
+        }
+        if (!isset($_SESSION['idUsuario'])) {
+            header("Location:/login");
+            exit();
+        }
+
+        try {
+            $mensaje = null;
+            if ($request->buscar == '') {
+                return $this->index();
+            }
+            switch ($request->columna) {
+                case 'nombreCobro':
+                    $cobros = DB::table('cobros')
+                    ->where('idUsuario',$_SESSION['idUsuario'])
+                    ->where('nombreCobro', '=', $request->buscar)
+                    ->get();
+                    break;
+                case 'cobrador':
+                    $cobros = DB::table('cobros')
+                    ->where('idUsuario',$_SESSION['idUsuario'])
+                    ->where('cobrador', '=', $request->buscar)
+                    ->get();
+                    break;
+                case 'monto':
+                    $cobros = DB::table('cobros')
+                    ->where('idUsuario',$_SESSION['idUsuario'])
+                    ->where('monto', '=', $request->buscar)
+                    ->get();
+                    break;
+                case 'fechaCobro':
+                    $cobros = DB::table('cobros')
+                    ->where('idUsuario',$_SESSION['idUsuario'])
+                    ->where('fechaCobro', '=', $request->buscar)
+                    ->get();
+                    break;
+                case 'frecuencia':
+                    $cobros = DB::table('cobros')
+                    ->where('idUsuario',$_SESSION['idUsuario'])
+                    ->where('frecuencia', '=', $request->buscar)
+                    ->get();
+                    break;
+                
+                default:
+                    $cobros = null;
+                    $mensaje = "Error al seleccionar columna";
+                    $this->index($mensaje,$cobros);;
+            }
+            $mensaje = "Busqueda '$request->buscar' en columna '$request->columna' realizada";
+            $this->index($mensaje,$cobros);
+        } catch(\Illuminate\Database\QueryException $e){
+            $errorCode = $e->errorInfo[1];
+            $cobros = null;
+            $mensaje = "Error al buscar registros [Error Code: ".$e->errorInfo[1]."]";
+            //dd($e->errorInfo);
+            return view('cobros', compact('cobros','mensaje'));
+        }
     }
 
     /**
@@ -164,7 +226,7 @@ class cobrosController extends Controller
                 'monto' => 'required|integer',
                 'fechaCobro' => 'required|date|after_or_equal:today',
                 'frecuencia'=>['required', Rule::in(['unico','mensual','semanal'])],
-                'descripcion'=>'string|max:255'
+                'descripcion'=>'max:255'
             ];
 
         #MENSAJES PERSONALIZADOS 

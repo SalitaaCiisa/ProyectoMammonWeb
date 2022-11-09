@@ -19,12 +19,14 @@ return new class extends Migration
 
             $table->foreign('idUsuario')->references('id')->on('usuarios');
 
-            $table->string('nombreCobro', 50)->unique();
+            $table->string('nombreCobro', 50);
             $table->string('cobrador', 50);
             $table->integer('monto');
             $table->date('fechaCobro');
             $table->string('descripcion', 255);
             $table->enum('frecuencia',['mensual','semanal','unico',]);
+
+            $table->unique(['idUsuario','nombreCobro']);
 
             $table->timestamps();
         });
