@@ -35,10 +35,8 @@
       </li>
       --}}
         </ul>
-        <form class="form-inline" action="/desconectarCuenta" method="POST">
+        <form class="form-inline" action="/desconectarCuenta" method="GET">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Desconectarse</button>
-            {{ csrf_field() }}
-            {{ method_field('POST') }}
         </form>
     </div>
 </nav>

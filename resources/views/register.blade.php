@@ -1,8 +1,8 @@
 <?php
 if (!isset($_SESSION)) {
-            session_start();
-        }
-if ($_SESSION != null) {
+    session_start();
+}
+if (isset($_SESSION['idUsuario'])) {
     header('Location: /');
     exit();
 }
@@ -36,7 +36,7 @@ if ($_SESSION != null) {
             @endphp
             </div>
         @endif
-        <form action="/crearUsuario" method="POST">
+        <form action="{{ route('usuarios.store') }}" method="POST">
             <h1 class="h3 mb-3 fw-normal">Registrarse</h1>
 
             <div class="form-floating">

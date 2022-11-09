@@ -1,9 +1,9 @@
 <?php
     if (!isset($_SESSION)) {
-            session_start();
-        }
-    if ($_SESSION == null) {
-        header("Location: /login");
+    session_start();
+    }
+    if (!isset($_SESSION['idUsuario'])) {
+        header('Location: /login');
         exit();
     }
 ?>
@@ -21,9 +21,10 @@
     @include('templates.navbar')
 </head>
 <body>
+    <!-- Message -->
     @if (isset($mensaje))
             <div class="alert alert-success alert-dismissible fade show" role="alert">{{ $mensaje }}</div>
-        @endif
+    @endif
     @yield('container')
 </body>
 <footer>

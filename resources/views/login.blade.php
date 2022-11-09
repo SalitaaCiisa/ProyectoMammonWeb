@@ -1,8 +1,8 @@
 <?php
 if (!isset($_SESSION)) {
-            session_start();
-        }
-if ($_SESSION != null) {
+    session_start();
+}
+if (isset($_SESSION['idUsuario'])) {
     header('Location: /');
     exit();
 }
@@ -58,7 +58,6 @@ if (isset($usuario)) {
                 </label>
             </div>
             <button class="w-100 btn btn-lg btn-primary" type="submit">Entrar</button>
-            {{ csrf_field() }}
             {{ method_field('GET') }}
         </form>
     </div>

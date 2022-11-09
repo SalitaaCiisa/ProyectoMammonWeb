@@ -1,10 +1,13 @@
 <?php
+
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
-class cuentasController extends Controller
+class cobrosController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,18 +23,28 @@ class cuentasController extends Controller
             header("Location:/login");
             exit();
         }
-
         try {
-        $cuentas = DB::table('cuentas')->where('idUsuario',$_SESSION['idUsuario'])->get();
-        return view('cuentasBancarias', compact('cuentas','mensaje'));
+        $cobros = DB::table('cobros')->where('idUsuario',$_SESSION['idUsuario'])->get();
+        header("Location:/cobros");
+        return view('cobros', compact('cobros','mensaje'));
         }
         catch(\Illuminate\Database\QueryException $e){
             $errorCode = $e->errorInfo[1];
-            $cuentas = null;
-            $mensaje = "Error al buscar cuentas [Error Code: ".$e->errorInfo[1]."]";
+            $cobros = null;
+            $mensaje = "Error al buscar registros [Error Code: ".$e->errorInfo[1]."]";
             //dd($e->errorInfo);
-            return view('cuentasBancarias', compact('cuentas','mensaje'));
+            return view('cobros', compact('cobros','mensaje'));
         }
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
     }
 
     /**
@@ -49,21 +62,27 @@ class cuentasController extends Controller
             header("Location:/login");
             exit();
         }
+
         #REGLAS DEL FORMULARIO
         $rules =
             [
-                'nombreCuenta' => 'required|string|min:1|max:100',
-                'link_token' => 'required|string',
-                'api_key' => 'required|string',
+                'nombreCobro' => 'required|string|min:1|max:50',
+                'cobrador' => 'required|string|min:1|max:50',
+                'monto' => 'required|integer',
+                'fechaCobro' => 'required|date|after_or_equal:today',
+                'frecuencia'=>['required', Rule::in(['unico','mensual','semanal'])],
+                'descripcion'=>'string|max:255'
             ];
 
         #MENSAJES PERSONALIZADOS 
         $customMessages =
             [
                 'required' => 'El campo :attribute es requerido',
-                'string' => 'El campo :attribute no puede estar vacio',
+                'string' => 'El campo :attribute debe ser string',
+                'integer' => 'El campo :attribute debe ser integer',
                 'min' => 'El campo :attribute debe ser al menos :min',
-                'max' => 'El campo :attribute debe ser como máximo :max'
+                'max' => 'El campo :attribute debe ser como máximo :max',
+                'after_or_equal' => 'La fecha :attribute debe ser desde :after_or_equal'
             ];
 
         #VALIDAMOS EL FORMULARIO ANTES DE INTENTAR HACER LA INSERCION
@@ -71,13 +90,16 @@ class cuentasController extends Controller
 
         #INTENTAMOS INSERTAR TOMANDO LOS DATOS DEL REQUEST
         try {
-            DB::table('cuentas')->insert([
+            DB::table('cobros')->insert([
                 'idUsuario' => $_SESSION['idUsuario'],
-                'nombreCuenta' => $request->nombreCuenta,
-                'link_token' => $request->link_token,
-                'api_key' => $request->api_key,
+                'nombreCobro' => $request->nombreCobro,
+                'cobrador' => $request->cobrador,
+                'monto' => $request->monto,
+                'fechaCobro' => $request->fechaCobro,
+                'descripcion' => $request->descripcion,
+                'frecuencia' => $request->frecuencia
             ]);
-            $mensaje = "Usuario registrado con éxito";
+            $mensaje = "Cobro registrado con éxito";
             return $this->index($mensaje);
         }
 
@@ -85,11 +107,11 @@ class cuentasController extends Controller
         catch (\Illuminate\Database\QueryException $e) {
             $errorCode = $e->errorInfo[1];
             if ($errorCode == 1062) {
-                $mensaje = "Error al crear nueva cuenta, entrada duplicada [Error Code: 1062]";
+                $mensaje = "Error al crear nuevo registro, entrada duplicada [Error Code: 1062]";
                 return $this->index($mensaje);
             } else {
                 $mensaje = "Ha ocurrido un error al insertar [Error Code: " . $e->errorInfo[1] . "]";
-                //dd($e->errorInfo);
+                dd($e->errorInfo);
                 return $this->index($mensaje);
             }
         }
@@ -102,6 +124,17 @@ class cuentasController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
     {
         //
     }
@@ -122,37 +155,48 @@ class cuentasController extends Controller
             header("Location:/login");
             exit();
         }
+
         #REGLAS DEL FORMULARIO
         $rules =
             [
-                'nombreCuenta' => 'required|string|min:1|max:100',
-                'link_token' => 'required|string',
-                'api_key' => 'required|string',
+                'nombreCobro' => 'required|string|min:1|max:50',
+                'cobrador' => 'required|string|min:1|max:50',
+                'monto' => 'required|integer',
+                'fechaCobro' => 'required|date|after_or_equal:today',
+                'frecuencia'=>['required', Rule::in(['unico','mensual','semanal'])],
+                'descripcion'=>'string|max:255'
             ];
 
         #MENSAJES PERSONALIZADOS 
         $customMessages =
             [
                 'required' => 'El campo :attribute es requerido',
-                'string' => 'El campo :attribute no puede estar vacio',
+                'string' => 'El campo :attribute debe ser string',
+                'integer' => 'El campo :attribute debe ser integer',
                 'min' => 'El campo :attribute debe ser al menos :min',
-                'max' => 'El campo :attribute debe ser como máximo :max'
+                'max' => 'El campo :attribute debe ser como máximo :max',
+                'after_or_equal' => 'La fecha :attribute debe ser desde :after_or_equal'
             ];
 
         #VALIDAMOS EL FORMULARIO ANTES DE INTENTAR HACER LA INSERCION
         $this->validate($request, $rules, $customMessages);
 
         try{
-            DB::table('cuentas')->where('id', $id)->where('idUsuario' , $_SESSION['idUsuario'])->update($request->except(['_token', '_method']));
-            $mensaje = "La cuenta bancaria '$request->nombreCuenta' ha sido actualizada con éxito";
+            DB::table('cobros')->where('id', $id)->where('idUsuario' , $_SESSION['idUsuario'])->update($request->except(['_token', '_method']));
+            $mensaje = "El registro '$request->nombreCobro' ha sido actualizado con éxito";
             return $this->index($mensaje);            
         }
         #EN CASO DE ERROR EN LA QUERY ATRAPAMOS EL ERROR Y LO DEVOLVEMOS A LA VISTA
         catch(\Illuminate\Database\QueryException $e){
             $errorCode = $e->errorInfo[1];
-            $mensaje = "Error al actualizar la cuenta bancaria. [Error Code: ".$e->errorInfo[1].".]";
-            //dd($e->errorInfo);
-            return $this->index($mensaje);
+            if ($errorCode == 1062) {
+                $mensaje = "Error al actualizar el registro, entrada duplicada [Error Code: 1062]";
+                return $this->index($mensaje);
+            } else {
+                $mensaje = "Ha ocurrido un error al actualizar [Error Code: " . $e->errorInfo[1] . "]";
+                //dd($e->errorInfo);
+                return $this->index($mensaje);
+            }
         }
     }
 
@@ -171,23 +215,24 @@ class cuentasController extends Controller
             header("Location:/login");
             exit();
         }
+
         try{
-            $respuesta = DB::table('cuentas')->where('id','=', $id)->where('idUsuario' ,'=', $_SESSION['idUsuario'])->delete();
+            $respuesta = DB::table('cobros')->where('id','=', $id)->where('idUsuario' ,'=', $_SESSION['idUsuario'])->delete();
 
             if ($respuesta == 1) {
-                $mensaje = "Cuenta bancaria eliminado con éxito";
+                $mensaje = "El registro ha sido eliminado con éxito";
                 return $this->index($mensaje);
             } elseif ($respuesta > 1) {
-                $mensaje = "WARNING Se han eliminado $respuesta cuentas";
+                $mensaje = "WARNING Se han eliminado $respuesta registros";
                 return $this->index($mensaje);
             }else {
-                $mensaje = "No se ha podido eliminar esa cuenta";
+                $mensaje = "No se ha podido eliminar ese registro";
                 return $this->index($mensaje);
             }
         }
         catch(\Illuminate\Database\QueryException $e){
             $errorCode = $e->errorInfo[1];
-            $mensaje = "Error al eliminar la cuenta de id =".$id." [Error Code: ".$e->errorInfo[1]."]";
+            $mensaje = "Error al eliminar el registro de id =".$id." [Error Code: ".$e->errorInfo[1]."]";
             //dd($e->errorInfo);
             return $this->index($mensaje);
         }

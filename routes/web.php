@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\abonosController;
+use App\Http\Controllers\cobrosController;
 use App\Http\Controllers\cuentasController;
 use App\Http\Controllers\usuariosController;
 use Illuminate\Support\Facades\Route;
@@ -15,52 +17,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('index');
-});
-
-Route::get('/cuentas', function () {
-    return view('cuentasBancarias');
-});
-
-Route::get('/cobros', function () {
-    return view('cobros');
-});
-
-Route::get('/abonos', function () {
-    return view('abonos');
-});
-
-Route::get('/login', function () {
-    return view('login');
-});
-
-Route::get('/register', function () {
-    return view('register');
-});
-
 Route::view('/','index')->name('inicio');
-
-Route::get('/cuentas',[cuentasController::class, 'index'])->name('cuentas');
-
-Route::view('/cobros','cobros')->name('cobros');
-
-Route::view('/abonos','abonos')->name('abonos');
 
 Route::view('/login','login')->name('login');
 
-#CONTROLLERS
-Route::resources([
-    'usuariosController' => usuariosController::class,
-]);
+Route::view('/register','register')->name('register');
 
-Route::resources([
-    'cuentasController' => cuentasController::class,
-]);
+#CONTROLLERS
+Route::resource('usuarios', usuariosController::class)->only('store');
+Route::resource('cuentas', cuentasController::class)->only(['index','store','update','destroy'])->name('index','cuentas');
+Route::resource('abonos', abonosController::class)->only(['index','store','update','destroy'])->name('index','abonos');
+Route::resource('cobros', cobrosController::class)->only(['index','store','update','destroy'])->name('index','cobros');
 
 Route::get('/confirmarUsuario', [usuariosController::class, 'search']);
-Route::post('/desconectarCuenta', [usuariosController::class, 'logOut']);
-Route::post('/crearUsuario', [usuariosController::class, 'store']);
-
-Route::post('/crearCuenta', [cuentasController::class, 'store']);
-Route::delete('/borrarCuenta', [cuentasController::class, 'destroy']);
+Route::get('/desconectarCuenta', [usuariosController::class, 'logOut']);

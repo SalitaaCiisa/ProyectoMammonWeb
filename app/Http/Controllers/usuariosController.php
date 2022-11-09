@@ -83,7 +83,7 @@ class usuariosController extends Controller
     }
 
     /**
-     * Search for the existing of an Usuario for his username and password.
+     * Search for the existing of an Usuario for their username and password.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response

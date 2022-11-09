@@ -4,12 +4,18 @@
 @endsection
 @section('container')
 <div class="container mt-4">
+    @if (count($errors) > 0)
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @php
+                $mensaje = null;
+                foreach ($errors->all() as $msg) {
+                    echo $msg."<br>";
+                }
+            @endphp
+            </div>
+    @endif
     <div class="card">
         <div class="card-header" style="background-color: #E5E5E5; text-align: center;">
-            <!-- Message -->
-            @if(isset($mensaje))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">{{ $mensaje }}</div>
-            @endif
             <h1>Cuentas</h1>
             <!-- Create user Modal -->
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createUserModal">Agregar Cuenta</button>
@@ -24,20 +30,20 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form class="form-group" method="POST" action="/crearCuenta">
+                            <form class="form-group" method="POST" action="{{ route('cuentas.store') }}">
                                 <label>Nombre de cuenta</label>
                                 <input type="text" id="nombreCuenta" name="nombreCuenta" class="form-control" placeholder="Banco estado">
                                 <label>link_token</label>
                                 <input type="text" id="link_token" name="link_token" class="form-control" placeholder="link_token">
                                 <label>api_key</label>
                                 <input type="text" id="api_key" name="api_key" class="form-control" placeholder="api_key">
+                                {{ csrf_field() }}
+                                {{ method_field('POST') }}
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                             <button type="submit" class="btn btn-primary">Agregar</button>
                         </div>
-                                {{ csrf_field() }}
-                                {{ method_field('POST') }}
                             </form>
                     </div>
                 </div>
@@ -63,7 +69,7 @@
                     <tbody>
                         @foreach ($cuentas as $cuenta)
                             <tr>
-                                <td>Nombre prueba</td>
+                                <td>{{ $cuenta->nombreCuenta}}</td>
                                 <td>Prueba</td>
                                 <td>Prueba</td>
                                 <td>Prueba</td>
@@ -72,9 +78,9 @@
                                 <td>{{ $cuenta->link_token}}</td>
                                 <td>{{ $cuenta->api_key}}</td>
                                 <td>
-                                    <form class="form-group" method="post" action="/borrarCuenta">
+                                    <form class="form-group" method="post" action="{{ route('cuentas.destroy',['cuenta'=>$cuenta->id])}}">
                                         <input type="text" name="id" id="id" value="{{ $cuenta->id}}" hidden>
-                                        <button type="submit" class="btn btn-secondary">Borrar</button>
+                                        <button type="submit" class="btn btn-danger">Borrar</button>
                                         {{ csrf_field() }}
                                         {{ method_field('DELETE')}}
                                     </form>
@@ -84,7 +90,7 @@
                     </tbody>
                 </table>
             @else
-                <h3 style="text-align: center;">No tienes cuentas registradas</h1>
+                <h3 style="text-align: center;">No tienes cuentas registradas</h3>
             @endif
         </div>
     </div>
