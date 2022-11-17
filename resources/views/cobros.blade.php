@@ -19,7 +19,7 @@
             <h1>Cobros</h1>
             <div class="d-flex justify-content-between">
                 <!-- Barra de busqueda -->
-                <form action="{{route('cobros.show')}}" class="row g-1">
+                <form action="{{route('cobros.show')}}" class="row g-1" method="POST">
                     <div class="col-auto">
                         <input type="text" class="form-control" id="buscar" name="buscar" placeholder="Buscar">
                     </div>
@@ -35,6 +35,7 @@
                     <div class="col-auto">
                         <button type="submit" class="btn btn-primary mb-3">Buscar</button>
                     </div>
+                    {{ method_field('GET') }}
                 </form>
                 <!-- Modal Store Button-->
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createCobroModal">Agregar</button>

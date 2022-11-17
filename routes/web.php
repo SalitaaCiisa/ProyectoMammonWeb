@@ -30,6 +30,7 @@ Route::resource('abonos', abonosController::class)->only(['index','store','updat
 Route::resource('cobros', cobrosController::class)->only(['index','store','update','destroy'])->name('index','cobros');
 
 Route::get('/cobrosB', [cobrosController::class, 'show'])->name('cobros.show');
+Route::get('/abonosB', [abonosController::class, 'show'])->name('abonos.show');
 
 Route::get('/confirmarUsuario', [usuariosController::class, 'search']);
 Route::get('/desconectarCuenta', [usuariosController::class, 'logOut']);

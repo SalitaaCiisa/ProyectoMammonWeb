@@ -29,8 +29,8 @@ class cobrosController extends Controller
         }
 
         try {
-        $cobros = DB::table('cobros')->where('idUsuario',$_SESSION['idUsuario'])->get();
-        return view('cobros', compact('cobros','mensaje'));
+            $cobros = DB::table('cobros')->where('idUsuario',$_SESSION['idUsuario'])->get();
+            return view('cobros', compact('cobros','mensaje'));
         }
         catch(\Illuminate\Database\QueryException $e){
             $errorCode = $e->errorInfo[1];
@@ -175,12 +175,11 @@ class cobrosController extends Controller
                     break;
                 
                 default:
-                    $cobros = null;
                     $mensaje = "Error al seleccionar columna";
-                    $this->index($mensaje,$cobros);;
+                    return $this->index($mensaje);
             }
             $mensaje = "Busqueda '$request->buscar' en columna '$request->columna' realizada";
-            $this->index($mensaje,$cobros);
+            return $this->index($mensaje,$cobros);
         } catch(\Illuminate\Database\QueryException $e){
             $errorCode = $e->errorInfo[1];
             $cobros = null;
