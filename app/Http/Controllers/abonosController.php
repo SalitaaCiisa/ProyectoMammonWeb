@@ -147,39 +147,44 @@ class abonosController extends Controller
                 case 'nombreAbono':
                     $abonos = DB::table('abonos')
                     ->where('idUsuario',$_SESSION['idUsuario'])
-                    ->where('nombreAbono', '=', $request->buscar)
+                    ->where('nombreAbono', 'LIKE', "%$request->buscar%")
                     ->get();
+                    $mensaje = "Busqueda '$request->buscar' en columna 'Nombre Abono' realizada";
                     break;
                 case 'abonador':
                     $abonos = DB::table('abonos')
                     ->where('idUsuario',$_SESSION['idUsuario'])
-                    ->where('abonador', '=', $request->buscar)
+                    ->where('abonador', 'LIKE', "%$request->buscar%")
                     ->get();
+                    $mensaje = "Busqueda '$request->buscar' en columna 'Quien abonará' realizada";
                     break;
                 case 'monto':
                     $abonos = DB::table('abonos')
                     ->where('idUsuario',$_SESSION['idUsuario'])
                     ->where('monto', '=', $request->buscar)
                     ->get();
+                    $mensaje = "Busqueda '$request->buscar' en columna 'Monto' realizada";
                     break;
                 case 'fechaAbono':
                     $abonos = DB::table('abonos')
                     ->where('idUsuario',$_SESSION['idUsuario'])
-                    ->where('fechaAbono', '=', $request->buscar)
+                    ->where('fechaAbono', 'LIKE', "$request->buscar%")
                     ->get();
+                    $mensaje = "Busqueda '$request->buscar' en columna 'Fecha del Abono' realizada";
                     break;
                 case 'frecuencia':
                     $abonos = DB::table('abonos')
                     ->where('idUsuario',$_SESSION['idUsuario'])
-                    ->where('frecuencia', '=', $request->buscar)
+                    ->where('frecuencia', 'LIKE', "%$request->buscar%")
                     ->get();
+                    $mensaje = "Busqueda '$request->buscar' en columna 'Frecuencia' realizada";
                     break;
                 
                 default:
+                    $abonos = null;
                     $mensaje = "Error al seleccionar columna";
-                    return $this->index($mensaje);
+                    return $this->index($mensaje,$abonos);;
             }
-            $mensaje = "Busqueda '$request->buscar' en columna '$request->columna' realizada";
             return $this->index($mensaje,$abonos);
         } catch(\Illuminate\Database\QueryException $e){
             $errorCode = $e->errorInfo[1];

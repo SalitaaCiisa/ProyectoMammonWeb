@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('abonador', 50);
             $table->integer('monto');
             $table->date('fechaAbono');
-            $table->string('descripcion', 255);
+            $table->string('descripcion', 255)->nullable();
             $table->enum('frecuencia',['mensual','semanal','unico',]);
 
             $table->unique(['idUsuario','nombreAbono']);
