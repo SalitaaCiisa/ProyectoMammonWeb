@@ -180,6 +180,7 @@ class cobrosController extends Controller
                     break;
                 
                 default:
+                    $cobros = null;
                     $mensaje = "Error al seleccionar columna";
                     $this->index($mensaje,$cobros);;
             }
