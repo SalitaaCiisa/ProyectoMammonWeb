@@ -14,7 +14,7 @@ class abonosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($mensaje = null)
+    public function index($mensaje = null, $abonos = null)
     {
         if (!isset($_SESSION)) {
             session_start();
@@ -23,6 +23,11 @@ class abonosController extends Controller
             header("Location:/login");
             exit();
         }
+
+        if ($abonos != null) {
+            return view('abonos', compact('abonos','mensaje'));
+        }
+
         try {
         $abonos = DB::table('abonos')->where('idUsuario',$_SESSION['idUsuario'])->get();
         header("Location:/abonos");
@@ -120,12 +125,74 @@ class abonosController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        //
+        if (!isset($_SESSION)) {
+            session_start();
+        }
+        if (!isset($_SESSION['idUsuario'])) {
+            header("Location:/login");
+            exit();
+        }
+
+        try {
+            $mensaje = null;
+            if ($request->buscar == '') {
+                return $this->index();
+            }
+            switch ($request->columna) {
+                case 'nombreAbono':
+                    $abonos = DB::table('abonos')
+                    ->where('idUsuario',$_SESSION['idUsuario'])
+                    ->where('nombreAbono', 'LIKE', "%$request->buscar%")
+                    ->get();
+                    $mensaje = "Busqueda '$request->buscar' en columna 'Nombre Abono' realizada";
+                    break;
+                case 'abonador':
+                    $abonos = DB::table('abonos')
+                    ->where('idUsuario',$_SESSION['idUsuario'])
+                    ->where('abonador', 'LIKE', "%$request->buscar%")
+                    ->get();
+                    $mensaje = "Busqueda '$request->buscar' en columna 'Quien abonará' realizada";
+                    break;
+                case 'monto':
+                    $abonos = DB::table('abonos')
+                    ->where('idUsuario',$_SESSION['idUsuario'])
+                    ->where('monto', '=', $request->buscar)
+                    ->get();
+                    $mensaje = "Busqueda '$request->buscar' en columna 'Monto' realizada";
+                    break;
+                case 'fechaAbono':
+                    $abonos = DB::table('abonos')
+                    ->where('idUsuario',$_SESSION['idUsuario'])
+                    ->where('fechaAbono', 'LIKE', "$request->buscar%")
+                    ->get();
+                    $mensaje = "Busqueda '$request->buscar' en columna 'Fecha del Abono' realizada";
+                    break;
+                case 'frecuencia':
+                    $abonos = DB::table('abonos')
+                    ->where('idUsuario',$_SESSION['idUsuario'])
+                    ->where('frecuencia', 'LIKE', "%$request->buscar%")
+                    ->get();
+                    $mensaje = "Busqueda '$request->buscar' en columna 'Frecuencia' realizada";
+                    break;
+                
+                default:
+                    $abonos = null;
+                    $mensaje = "Error al seleccionar columna";
+                    return $this->index($mensaje,$abonos);;
+            }
+            return $this->index($mensaje,$abonos);
+        } catch(\Illuminate\Database\QueryException $e){
+            $errorCode = $e->errorInfo[1];
+            $abonos = null;
+            $mensaje = "Error al buscar registros [Error Code: ".$e->errorInfo[1]."]";
+            //dd($e->errorInfo);
+            return view('abonos', compact('abonos','mensaje'));
+        }
     }
 
     /**

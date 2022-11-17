@@ -146,41 +146,45 @@ class cobrosController extends Controller
                 case 'nombreCobro':
                     $cobros = DB::table('cobros')
                     ->where('idUsuario',$_SESSION['idUsuario'])
-                    ->where('nombreCobro', '=', $request->buscar)
+                    ->where('nombreCobro', 'LIKE', "%$request->buscar%")
                     ->get();
+                    $mensaje = "Busqueda '$request->buscar' en columna 'Nombre Cobro' realizada";
                     break;
                 case 'cobrador':
                     $cobros = DB::table('cobros')
                     ->where('idUsuario',$_SESSION['idUsuario'])
-                    ->where('cobrador', '=', $request->buscar)
+                    ->where('cobrador', 'LIKE', "%$request->buscar%")
                     ->get();
+                    $mensaje = "Busqueda '$request->buscar' en columna 'Quien cobrará' realizada";
                     break;
                 case 'monto':
                     $cobros = DB::table('cobros')
                     ->where('idUsuario',$_SESSION['idUsuario'])
                     ->where('monto', '=', $request->buscar)
                     ->get();
+                    $mensaje = "Busqueda '$request->buscar' en columna 'Monto' realizada";
                     break;
                 case 'fechaCobro':
                     $cobros = DB::table('cobros')
                     ->where('idUsuario',$_SESSION['idUsuario'])
-                    ->where('fechaCobro', '=', $request->buscar)
+                    ->where('fechaCobro', 'LIKE', "$request->buscar%")
                     ->get();
+                    $mensaje = "Busqueda '$request->buscar' en columna 'Fecha del Cobro' realizada";
                     break;
                 case 'frecuencia':
                     $cobros = DB::table('cobros')
                     ->where('idUsuario',$_SESSION['idUsuario'])
-                    ->where('frecuencia', '=', $request->buscar)
+                    ->where('frecuencia', 'LIKE', "%$request->buscar%")
                     ->get();
+                    $mensaje = "Busqueda '$request->buscar' en columna 'Frecuencia' realizada";
                     break;
                 
                 default:
                     $cobros = null;
                     $mensaje = "Error al seleccionar columna";
-                    $this->index($mensaje,$cobros);;
+                    return $this->index($mensaje,$cobros);;
             }
-            $mensaje = "Busqueda '$request->buscar' en columna '$request->columna' realizada";
-            $this->index($mensaje,$cobros);
+            return $this->index($mensaje,$cobros);
         } catch(\Illuminate\Database\QueryException $e){
             $errorCode = $e->errorInfo[1];
             $cobros = null;
