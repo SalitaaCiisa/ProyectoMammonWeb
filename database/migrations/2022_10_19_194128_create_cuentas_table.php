@@ -22,10 +22,12 @@ return new class extends Migration
             $table->string('nombreCuenta', 100);
             $table->string('link_token', 255);
             $table->string('api_key', 255);
+            $table->string('id_cuenta', 255)->nullable();
 
-            $table->unique(['idUsuario','link_token','api_key']);
+            $table->unique(['idUsuario','link_token','api_key','id_cuenta']);
             
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

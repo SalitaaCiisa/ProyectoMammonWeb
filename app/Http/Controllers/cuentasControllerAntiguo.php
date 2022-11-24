@@ -1,9 +1,7 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
-use App\Models\Cuentas;
 use Illuminate\Http\Request;
 
 class cuentasController extends Controller
@@ -24,8 +22,7 @@ class cuentasController extends Controller
         }
 
         try {
-        //$cuentas = DB::table('cuentas')->where('idUsuario',$_SESSION['idUsuario'])->get();
-        $cuentas = Cuentas::where('idUsuario',$_SESSION['idUsuario'])->get();
+        $cuentas = DB::table('cuentas')->where('idUsuario',$_SESSION['idUsuario'])->get();
         return view('cuentasBancarias', compact('cuentas','mensaje'));
         }
         catch(\Illuminate\Database\QueryException $e){
@@ -35,16 +32,6 @@ class cuentasController extends Controller
             //dd($e->errorInfo);
             return view('cuentasBancarias', compact('cuentas','mensaje'));
         }
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -111,110 +98,10 @@ class cuentasController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Cuentas  $cuentas
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Cuentas $cuentas)
-    {
-        //
-    }
-
-    /**
-     * Display a list of trashed resources.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show_trashed($mensaje = null)
-    {
-        if (!isset($_SESSION)) {
-            session_start();
-        }
-        if (!isset($_SESSION['idUsuario'])) {
-            header("Location:/login");
-            exit();
-        }
-
-        try {
-        //$cuentas = Cuentas::onlytrashed()->where('idUsuario',$_SESSION['idUsuario'])->get();
-        $cuentas = Cuentas::where('idUsuario',$_SESSION['idUsuario'])->onlyTrashed()->get();
-        return view('cuentasBancariasTrashed', compact('cuentas','mensaje'));
-        }
-        catch(\Illuminate\Database\QueryException $e){
-            $errorCode = $e->errorInfo[1];
-            $cuentas = null;
-            $mensaje = "Error al buscar cuentas [Error Code: ".$e->errorInfo[1]."]";
-            //dd($e->errorInfo);
-            return view('cuentasBancarias', compact('cuentas','mensaje'));
-        }
-    }
-
-    /**
-     * Restores a trashed resource.
-     *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function restore_trashed($id){
-        if (!isset($_SESSION)) {
-            session_start();
-        }
-        if (!isset($_SESSION['idUsuario'])) {
-            header("Location:/login");
-            exit();
-        }
-
-        try {
-            $cuenta = Cuentas::onlyTrashed()->find($id);
-            $cuenta->restore();
-
-            $mensaje = "Se ha restaurado la cuenta de id: $id con exito";
-        } catch (\Illuminate\Database\QueryException $e) {
-            $errorCode = $e->errorInfo[1];
-            $mensaje = "Error al restaurar la cuenta de id =".$id." [Error Code: ".$e->errorInfo[1]."]";
-            //dd($e->errorInfo);
-            return $this->show_trashed($mensaje);
-        }
-
-        return $this->show_trashed($mensaje);
-    }
-
-    /**
-     * Delete permanently a trashed resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function forceDelete_trashed($id){
-        if (!isset($_SESSION)) {
-            session_start();
-        }
-        if (!isset($_SESSION['idUsuario'])) {
-            header("Location:/login");
-            exit();
-        }
-
-        try {
-            $cuenta = Cuentas::onlyTrashed()->find($id);
-            $cuenta->forceDelete();
-
-            $mensaje = "Se ha eliminado la cuenta de id: $id con exito";
-        } catch (\Illuminate\Database\QueryException $e) {
-            $errorCode = $e->errorInfo[1];
-            $mensaje = "Error al eliminar la cuenta de id =".$id." [Error Code: ".$e->errorInfo[1]."]";
-            //dd($e->errorInfo);
-            return $this->show_trashed($mensaje);
-        }
-
-        return $this->show_trashed($mensaje);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Cuentas  $cuentas
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Cuentas $cuentas)
+    public function show($id)
     {
         //
     }
@@ -223,10 +110,10 @@ class cuentasController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Cuentas  $cuentas
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Cuentas $cuentas)
+    public function update(Request $request, $id)
     {
         if (!isset($_SESSION)) {
             session_start();
@@ -256,7 +143,7 @@ class cuentasController extends Controller
         $this->validate($request, $rules, $customMessages);
 
         try{
-            Cuentas::where('id', $cuentas->id)->where('idUsuario' , $_SESSION['idUsuario'])->update($request->except(['_token', '_method']));
+            DB::table('cuentas')->where('id', $id)->where('idUsuario' , $_SESSION['idUsuario'])->update($request->except(['_token', '_method']));
             $mensaje = "La cuenta bancaria '$request->nombreCuenta' ha sido actualizada con éxito";
             return $this->index($mensaje);            
         }
@@ -285,26 +172,22 @@ class cuentasController extends Controller
             exit();
         }
         try{
-            $cuenta = Cuentas::find($id);
-
-            $respuesta = $cuenta->where('id','=', $id)->where('idUsuario' ,'=', $_SESSION['idUsuario'])->delete();
-
-            //$respuesta = Cuentas::where('id','=', $cuentas->id)->where('idUsuario' ,'=', $_SESSION['idUsuario'])->delete();
+            $respuesta = DB::table('cuentas')->where('id','=', $id)->where('idUsuario' ,'=', $_SESSION['idUsuario'])->delete();
 
             if ($respuesta == 1) {
-                $mensaje = "Cuenta bancaria archivada con éxito";
+                $mensaje = "Cuenta bancaria eliminado con éxito";
                 return $this->index($mensaje);
             } elseif ($respuesta > 1) {
-                $mensaje = "WARNING Se han archivado $respuesta cuentas";
+                $mensaje = "WARNING Se han eliminado $respuesta cuentas";
                 return $this->index($mensaje);
             }else {
-                $mensaje = "No se ha podido archivar esa cuenta";
+                $mensaje = "No se ha podido eliminar esa cuenta";
                 return $this->index($mensaje);
             }
         }
         catch(\Illuminate\Database\QueryException $e){
             $errorCode = $e->errorInfo[1];
-            $mensaje = "Error al archivar la cuenta de id =".$id." [Error Code: ".$e->errorInfo[1]."]";
+            $mensaje = "Error al eliminar la cuenta de id =".$id." [Error Code: ".$e->errorInfo[1]."]";
             //dd($e->errorInfo);
             return $this->index($mensaje);
         }
