@@ -74,8 +74,16 @@
                         @foreach ($cuentas as $cuenta)
                             <tr>
                                 <td>{{ $cuenta->Cuenta->nombreCuenta}}</td>
-                                <td>{{ $cuenta->Array[0]['balance']['available']}}</td>
-                                <td>{{ $cuenta->Array[0]['refreshed_at']}}</td>
+                                <td>@if (!isset($cuenta->Array['error']))
+                                    {{ $cuenta->Array[0]['balance']['available']}}
+                                    @else
+                                    error
+                                    @endif</td>
+                                <td>@if (!isset($cuenta->Array['error']))
+                                    {{ $cuenta->Array[0]['refreshed_at']}}
+                                    @else
+                                    error
+                                    @endif</td>
                                 <td>{{ $cuenta->Cuenta->link_token}}</td>
                                 <td>{{ $cuenta->Cuenta->api_key}}</td>
                                 <td>

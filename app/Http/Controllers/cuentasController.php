@@ -45,7 +45,7 @@ class cuentasController extends Controller
 
                 array_push($cuentas, new CuentasAPI($jsonCuentas,$cuenta));
 
-                //dd($jsonCuentas[0]['balance']['available']);
+                //dd($cuentas);
             }
 
             return view('cuentasBancarias', compact('cuentas','mensaje'));
