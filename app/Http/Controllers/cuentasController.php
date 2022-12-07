@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
 use App\Models\Cuentas;
+use App\Models\CuentasAPI;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Spatie\FlareClient\Api;
 
 class cuentasController extends Controller
 {
@@ -24,9 +27,28 @@ class cuentasController extends Controller
         }
 
         try {
-        //$cuentas = DB::table('cuentas')->where('idUsuario',$_SESSION['idUsuario'])->get();
-        $cuentas = Cuentas::where('idUsuario',$_SESSION['idUsuario'])->get();
-        return view('cuentasBancarias', compact('cuentas','mensaje'));
+            //$cuentas = DB::table('cuentas')->where('idUsuario',$_SESSION['idUsuario'])->get();
+            $cuentasDB = Cuentas::where('idUsuario',$_SESSION['idUsuario'])->get();
+
+            $cuentas = array();
+
+            $url = 'https://api.fintoc.com/v1/accounts';
+            foreach ($cuentasDB as $cuenta) {
+                $response = Http::withHeaders([
+                    'Authorization' => $cuenta->api_key
+                ])
+                    ->get($url, [
+                    'link_token' => $cuenta->link_token
+                ]);
+
+                $jsonCuentas = $response->json();
+
+                array_push($cuentas, new CuentasAPI($jsonCuentas,$cuenta));
+
+                //dd($jsonCuentas[0]['balance']['available']);
+            }
+
+            return view('cuentasBancarias', compact('cuentas','mensaje'));
         }
         catch(\Illuminate\Database\QueryException $e){
             $errorCode = $e->errorInfo[1];

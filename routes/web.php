@@ -5,6 +5,7 @@ use App\Http\Controllers\cobrosController;
 use App\Http\Controllers\cuentasController;
 use App\Http\Controllers\usuariosController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Http;
 
 /*
 |--------------------------------------------------------------------------

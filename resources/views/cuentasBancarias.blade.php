@@ -58,16 +58,13 @@
             </div>
         </div>
         <div class="card-body">
-            @if (!$cuentas->isEmpty())
+            @if (!$cuentas == null)
                 <table class="table table-striped">
                     <thead class="thead-dark">
                         <tr>
                             <th scope="col">Nombre Cuenta</th>
                             <th scope="col">Dinero en cuenta</th>
-                            <th scope="col">Fecha Ultimo Cargo</th>
-                            <th scope="col">Monto Ultimo Cargo</th>
-                            <th scope="col">Fecha Ultimo Abono</th>
-                            <th scope="col">Monto Ultimo Abono</th>
+                            <th scope="col">Fecha Ultimo movimiento</th>
                             <th scope="col">Prueba link_token</th>
                             <th scope="col">Prueba API key</th>
                             <th scope="col">Opciones</th>
@@ -76,17 +73,14 @@
                     <tbody>
                         @foreach ($cuentas as $cuenta)
                             <tr>
-                                <td>{{ $cuenta->nombreCuenta}}</td>
-                                <td>Prueba</td>
-                                <td>Prueba</td>
-                                <td>Prueba</td>
-                                <td>Prueba</td>
-                                <td>Prueba</td>
-                                <td>{{ $cuenta->link_token}}</td>
-                                <td>{{ $cuenta->api_key}}</td>
+                                <td>{{ $cuenta->Cuenta->nombreCuenta}}</td>
+                                <td>{{ $cuenta->Array[0]['balance']['available']}}</td>
+                                <td>{{ $cuenta->Array[0]['refreshed_at']}}</td>
+                                <td>{{ $cuenta->Cuenta->link_token}}</td>
+                                <td>{{ $cuenta->Cuenta->api_key}}</td>
                                 <td>
-                                    <form class="form-group" method="post" action="{{ route('cuentas.destroy',['cuenta'=>$cuenta])}}">
-                                        <input type="text" name="id" id="id" value="{{ $cuenta->id}}" hidden>
+                                    <form class="form-group" method="post" action="{{ route('cuentas.destroy',['cuenta'=>$cuenta->Cuenta])}}">
+                                        <input type="text" name="id" id="id" value="{{ $cuenta->Cuenta->id}}" hidden>
                                         <button type="submit" class="btn btn-danger">Archivar</button>
                                         {{ csrf_field() }}
                                         {{ method_field('DELETE')}}
